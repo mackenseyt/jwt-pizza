@@ -36,10 +36,12 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist/
+
       - name: Run tests
         run: |
           npx playwright install --with-deps chromium
           npm run test:coverage
+          
       - name: Update coverage
         run: |
           coverage=$(jq '.total.lines.pct' coverage/coverage-summary.json)

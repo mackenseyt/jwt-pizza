@@ -1,33 +1,6 @@
 import { test, expect } from 'playwright-test-coverage';
 
 test('view history and about page', async ({ page }) => {
-  await page.route('*/**/api/order/menu', async (route) => {
-    const menuRes = [
-      { id: 1, title: 'Veggie', image: 'pizza1.png', price: 0.0038, description: 'A garden of delight' },
-      { id: 2, title: 'Pepperoni', image: 'pizza2.png', price: 0.0042, description: 'Spicy treat' },
-    ];
-    expect(route.request().method()).toBe('GET');
-    await route.fulfill({ json: menuRes });
-  });
-
-  await page.route('*/**/api/franchise', async (route) => {
-    const franchiseRes = [
-      {
-        id: 2,
-        name: 'LotaPizza',
-        stores: [
-          { id: 4, name: 'Lehi' },
-          { id: 5, name: 'Springville' },
-          { id: 6, name: 'American Fork' },
-        ],
-      },
-      { id: 3, name: 'PizzaCorp', stores: [{ id: 7, name: 'Spanish Fork' }] },
-      { id: 4, name: 'topSpot', stores: [] },
-    ];
-    expect(route.request().method()).toBe('GET');
-    await route.fulfill({ json: franchiseRes });
-  });
-
   await page.route('*/**/api/auth', async (route) => {
     const loginReq = { email: 'a@jwt.com', password: 'admin' };
       expect(route.request().postDataJSON()).toMatchObject(loginReq);

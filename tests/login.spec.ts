@@ -62,17 +62,15 @@ test('purchase with login', async ({ page }) => {
       };
       await route.fulfill({ json: orderRes });
     } else {
-      // For non-POST requests, you might just let them continue:
+      // GET
       await route.continue();
     }
   });
 
   await page.goto('/');
 
-  // Go to order page
+  // order
   await page.getByRole('button', { name: 'Order now' }).click();
-
-  // Create order
   await expect(page.locator('h2')).toContainText('Awesome is a click away');
   await page.getByRole('combobox').selectOption('4');
   await page.getByRole('link', { name: 'Image Description Veggie A' }).click();
@@ -96,8 +94,31 @@ test('purchase with login', async ({ page }) => {
 
   // Check balance
   await expect(page.getByText('0.008')).toBeVisible();
-  // await page.getByRole('link', { name: 'home' }).click();
+});
+
+test('diner dashboard', async ({ page }) => {
+  await page.route('*/**/api/auth', async (route) => {
+    const loginReq = { email: 'd@jwt.com', password: 'a' };
+    const loginRes = { user: { id: 3, name: 'Kai Chen', email: 'd@jwt.com', roles: [{ role: 'diner' }] }, token: 'abcdef' };
+    expect(route.request().method()).toBe('PUT');
+    expect(route.request().postDataJSON()).toMatchObject(loginReq);
+    await route.fulfill({ json: loginRes });
+  });
+
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Login' }).click();
+  await expect(page.getByText('Welcome back')).toBeVisible();
+  await page.getByPlaceholder('Email address').fill('d@jwt.com');
+  await page.getByPlaceholder('Password').fill('a');
+  await page.getByRole('button', { name: 'Login' }).click();
+  // diner dashboard
   await page.getByRole('link', { name: 'kc' }).click();
   await page.getByText('Kai Chen').click();
+  await expect(page.getByRole('heading', { name: 'Your pizza kitchen' })).toBeVisible();
 
+  // Verify that user information
+  await expect(page.getByText('Kai Chen')).toBeVisible();
+  await expect(page.getByText('d@jwt.com')).toBeVisible();
+  await expect(page.getByRole('main')).toContainText('role:');
+  await expect(page.getByText('How have you lived this long without having a pizza? Buy one now!')).toBeVisible();
 });

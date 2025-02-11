@@ -21,12 +21,6 @@ test('register', async ({ page }) => {
     await expect(page.locator('.w-screen')).toBeVisible();
 });
 
-// // admin dashboard viewing
-  // await page.getByRole('link', { name: 'Admin' }).click();
-  // await expect(page.getByText('Mama Ricci\'s kitchen')).toBeVisible();
-  // await expect(page.locator('thead')).toContainText('Franchise');
-  // await page.getByRole('row', { name: 'pizzaPocket' }).getByRole('button').click();
-  // await page.getByText('Sorry to see you go').click();
   test('admin page', async ({ page }) => {
     await page.route('*/**/api/auth', async (route) => {
         const loginReq = { email: 'k@jwt.com', password: '123' };
@@ -35,6 +29,7 @@ test('register', async ({ page }) => {
         expect(route.request().postDataJSON()).toMatchObject(loginReq);
         await route.fulfill({ json: loginRes });
       });
+      
       await page.goto('/');
       // Login
       await page.getByRole('link', { name: 'Login' }).click();
@@ -46,6 +41,5 @@ test('register', async ({ page }) => {
       await page.getByRole('link', { name: 'Admin' }).click();
       await expect(page.getByText('Mama Ricci\'s kitchen')).toBeVisible();
       await expect(page.locator('thead')).toContainText('Franchise');
-      await page.getByRole('row', { name: 'pizzaPocket' }).getByRole('button').click();
-      await page.getByText('Sorry to see you go').click();
+      
 });

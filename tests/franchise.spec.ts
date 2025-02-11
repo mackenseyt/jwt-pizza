@@ -3,7 +3,6 @@ import { test, expect } from 'playwright-test-coverage';
 test('franchise store management', async ({ page }) => {
   // login franchise
   await page.route('**/api/auth', async (route) => {
-    //  franchise credentials.
     const loginReq = { email: 'f@jwt.com', password: 'franchisee' };
     expect(route.request().postDataJSON()).toMatchObject(loginReq);
     const loginRes = {
@@ -28,23 +27,7 @@ test('franchise store management', async ({ page }) => {
     }
   });
 
-  // make new franchise called kenz
-  // await page.route('**/api/franchise', async (route) => {
-  //   const postData = route.request().postDataJSON();
-  //   expect(postData).toMatchObject({ name: 'kenz', franchiseId: 1 });
-
-  //   // Return the created store
-  //   const newStore = { id: 101, name: 'kenz' };
-  //   await route.fulfill({ json: newStore });
-  // });
-
-//   // delete
-//   await page.route('**/api/franchise/:franchiseId', async (route) => {
-//     await route.fulfill({ status: 200, json: { message: 'Store deleted' } });
-//   });
-
   await page.goto('/');
-
   // Login
   await page.getByRole('link', { name: 'Login' }).click();
   await expect(page.getByText('Welcome back')).toBeVisible();
@@ -60,7 +43,37 @@ test('franchise store management', async ({ page }) => {
   await page.getByRole('textbox', { name: 'store name' }).click();
   await page.getByRole('textbox', { name: 'store name' }).fill('kenz');
   await page.getByRole('button', { name: 'Create' }).click();
-  // await page.reload();
-  // await expect(page.getByText('kenz')).toBeVisible();
+});
+
+test('create a new franchise', async ({ page }) => {
+  //the POST request 
+  await page.route('**/api/franchise', async (route) => {
+    if (route.request().method() === 'POST') {
+      const postData = route.request().postDataJSON();
+      expect(postData).toMatchObject({
+        name: 'pizzaPocket',
+        admins: [{ email: 'f@jwt.com' }],
+      });
+      await route.fulfill({
+        json: {
+          name: 'pizzaPocket',
+          admins: [
+            { email: 'f@jwt.com', id: 4, name: 'pizza franchisee' }
+          ],
+          id: 1
+        }
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  // create a franchise
+  await page.goto('/create-franchise');
+  await expect(page.getByRole('heading', { name: 'Create franchise' })).toBeVisible();
+  await page.getByPlaceholder('franchise name').fill('pizzaPocket');
+  await page.getByPlaceholder('franchisee admin email').fill('f@jwt.com');
+  await page.getByRole('button', { name: 'Create' }).click();
 
 });
+

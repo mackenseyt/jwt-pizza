@@ -26,6 +26,4 @@ await page.getByRole('link', { name: 'About' }).click();
 await expect(page.getByText('The secret sauce')).toBeVisible();
 await page.getByRole('link', { name: 'Franchise' }).click();
 await expect(page.getByText('If you are already a')).toBeVisible();
-
-
 });

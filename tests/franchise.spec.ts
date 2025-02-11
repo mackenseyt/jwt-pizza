@@ -28,8 +28,6 @@ test('franchise store management', async ({ page }) => {
     }
   });
 
-  
-
   // make new franchise called kenz
   // await page.route('**/api/franchise', async (route) => {
   //   const postData = route.request().postDataJSON();
@@ -64,6 +62,5 @@ test('franchise store management', async ({ page }) => {
   await page.getByRole('button', { name: 'Create' }).click();
   // await page.reload();
   // await expect(page.getByText('kenz')).toBeVisible();
-
 
 });

@@ -38,29 +38,33 @@ test('purchase with login', async ({ page }) => {
   });
 
   await page.route('*/**/api/order', async (route) => {
-    const orderReq = {
-      items: [
-        { menuId: 1, description: 'Veggie', price: 0.0038 },
-        { menuId: 2, description: 'Pepperoni', price: 0.0042 },
-      ],
-      storeId: '4',
-      franchiseId: 2,
-    };
-    const orderRes = {
-      order: {
+    if (route.request().method() === 'POST') {
+      const orderReq = {
         items: [
           { menuId: 1, description: 'Veggie', price: 0.0038 },
           { menuId: 2, description: 'Pepperoni', price: 0.0042 },
         ],
         storeId: '4',
         franchiseId: 2,
-        id: 23,
-      },
-      jwt: 'eyJpYXQ',
-    };
-    expect(route.request().method()).toBe('POST');
-    expect(route.request().postDataJSON()).toMatchObject(orderReq);
-    await route.fulfill({ json: orderRes });
+      };
+      expect(route.request().postDataJSON()).toMatchObject(orderReq);
+      const orderRes = {
+        order: {
+          items: [
+            { menuId: 1, description: 'Veggie', price: 0.0038 },
+            { menuId: 2, description: 'Pepperoni', price: 0.0042 },
+          ],
+          storeId: '4',
+          franchiseId: 2,
+          id: 23,
+        },
+        jwt: 'eyJpYXQ',
+      };
+      await route.fulfill({ json: orderRes });
+    } else {
+      // For non-POST requests, you might just let them continue:
+      await route.continue();
+    }
   });
 
   await page.goto('/');
@@ -92,4 +96,8 @@ test('purchase with login', async ({ page }) => {
 
   // Check balance
   await expect(page.getByText('0.008')).toBeVisible();
+  // await page.getByRole('link', { name: 'home' }).click();
+  await page.getByRole('link', { name: 'kc' }).click();
+  await page.getByText('Kai Chen').click();
+
 });

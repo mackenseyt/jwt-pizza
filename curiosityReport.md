@@ -10,7 +10,6 @@ Test-Driven Development (TDD) is a software development process where tests are 
 This cycle continues throughout the development process.
 
 ## Why Use TDD?
-### Benefits:
 1. **Improved Code Quality**  
    - Encourages clean, modular, and maintainable code.
    - Ensures testability from the beginning.
@@ -81,6 +80,40 @@ While TDD has many benefits, there are also challenges and limitations to consid
 - **DevOps Practices:**  
   - By integrating TDD into a DevOps pipeline, teams can ensure that deployments are reliable and that any issues are caught early in the development cycle.
 
+## TDD in Practice with Jest and Playwright
+TDD is not just a theory—it’s a practice that can be applied with various testing frameworks. Here’s how you might integrate TDD with **Jest** for unit tests and **Playwright** for end-to-end tests.
+
+### TDD Cycle with Jest (Unit Testing)
+1. **Write a Failing Test:**
+   Create a test for a simple function. For example, testing a function that sums two numbers.
+
+   ```javascript
+   // sum.test.js
+   const { sum } = require('./sum');
+
+   test('sums 1 and 2 to equal 3', () => {
+     expect(sum(1, 2)).toBe(3);
+   });
+   ```
+
+2. **Run the Test:**
+   Run your test suite using Jest. The test will fail because the sum function hasn't been implemented yet.
+
+3. **Implement the Function:**
+   Write the minimal code to pass the test.
+
+   ```javascript
+   // sum.js
+   function sum(a, b) {
+     return a + b;
+   }
+
+   module.exports = { sum };
+   ```
+
+4. **Refactor:**
+   Once the test passes, refactor your code to improve readability or performance, while ensuring that all tests continue to pass.
+It is more complicated than that when it comes to actual in industry testing but that is the basic idea.
 ## How I Could Use TDD in My School Work
 - Writing unit tests for assignments to ensure correctness before submission.
 - Using TDD when building personal projects to improve maintainability.

@@ -53,7 +53,7 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     environment:
-      name: stage
+      name: stageing
       url: https://stage-pizza.byucs329studentpizzawebpage.click
     env:
       version: ${{needs.build.outputs.version}}
